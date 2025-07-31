@@ -1,0 +1,3041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#7b4397">
+    <title>Magic Cauldron Puzzle</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        :root {
+            --red-color: linear-gradient(to bottom, #ff5555, #cc0000);
+            --blue-color: linear-gradient(to bottom, #5599ff, #0044cc);
+            --green-color: linear-gradient(to bottom, #55ff55, #00cc00);
+            --yellow-color: linear-gradient(to bottom, #ffff55, #cccc00);
+            --purple-color: linear-gradient(to bottom, #aa55ff, #6600cc);
+            --orange-color: linear-gradient(to bottom, #ffaa55, #cc6600);
+            --teal-color: linear-gradient(to bottom, #55ffaa, #00cc66);
+        }
+
+        body {
+            font-family: 'Arial Rounded MT Bold', 'Arial Bold', sans-serif;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiPjxwYXRoIGQ9Ik0wIDEwaDQwTTEwIDBoMzBNMCAyMGg0ME0xMCAxMGgzME0wIDMwaDQwTTEwIDIwaDMwTTAgMGg0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDEyOCwgMCwgMTI4LCAwLjEpIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjcGF0dGVybikiLz48L3N2Zz4='), linear-gradient(to bottom, #7b4397, #5a3278);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Game Container */
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Header Section */
+        .game-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: linear-gradient(to right, #c471ed, #f64f59);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            margin-bottom: 20px;
+            z-index: 10;
+        }
+
+        .game-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .game-title::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #fff;
+            border-radius: 3px;
+        }
+
+        .game-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .level-indicator, .score-display, .attempts-counter {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 12px;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .attempts-counter {
+            background: #e74c3c;
+            padding: 8px 12px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .level-indicator::before {
+            content: "";
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJsMyA3aDdMMTYgMTNsMyA3LTctNC03IDQgMy03LTYtNGg3eiIvPjwvc3ZnPg==');
+            background-size: cover;
+        }
+
+        .score-display::before {
+            content: "";
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZCc4MCIgZD0iTTEyIDJDNi40OCAyIDIgNi40OCAyIDEyczQuNDggMTAgMTAgMTAgMTAtNC40OCAxMC0xMFMxNy41MiAyIDEyIDJ6bTAgMThjLTQuNDIgMC04LTMuNTgtOC04czMuNTgtOCA4LTggOCAzLjU4IDggOC0zLjU4IDgtOCA4ek0xMSAxN2gydi02aC00djJoMnY0eiIvPjwvc3ZnPg==');
+            background-size: cover;
+        }
+
+        /* Decorative Elements */
+        .side-shelves {
+            position: absolute;
+            top: 200px;
+            width: 100%;
+            max-width: 900px;
+            height: 400px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .left-shelf, .right-shelf {
+            position: absolute;
+            width: 100px;
+            height: 300px;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMzAwIj48cmVjdCB4PSIwIiB5PSI1MCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzhiNTEzYiIvPjxyZWN0IHg9IjAiIHk9IjE1MCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzhiNTEzYiIvPjxyZWN0IHg9IjAiIHk9IjI1MCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIyMCIgZmlsbD0iIzhiNTEzYiIvPjwvc3ZnPg==');
+            background-repeat: no-repeat;
+        }
+
+        .left-shelf {
+            left: -110px;
+        }
+
+        .right-shelf {
+            right: -110px;
+            transform: scaleX(-1);
+        }
+
+        .shelf-item {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .book {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+PHJlY3QgeD0iNSIgeT0iNSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjOTc0ZTQyIiBzdHJva2U9IiM1ZDJlMjMiIHN0cm9rZS13aWR0aD0iMiIvPjxsaW5lIHgxPSIxNSIgeTE9IjEwIiB4Mj0iMTUiIHkyPSI0MCIgc3Ryb2tlPSIjZThjYzhhIiBzdHJva2Utd2lkdGg9IjIiLz48bGluZSB4MT0iMzUiIHkxPSIxMCIgeDI9IjM1IiB5Mj0iNDAiIHN0cm9rZT0iI2U4Y2M4YSIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9zdmc+');
+        }
+
+        .potion-shelf {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+PGNpcmNsZSBjeD0iMjUiIGN5PSIxNSIgcj0iMTAiIGZpbGw9IiNmNDQzMzYiLz48cGF0aCBkPSJNMTUgMTVMMTUgNDAgTDM1IDQwIEwzNSAxNSIgZmlsbD0iI2Y0NDMzNiIgb3BhY2l0eT0iMC43Ii8+PHJlY3QgeD0iMjIiIHk9IjUiIHdpZHRoPSI2IiBoZWlnaHQ9IjgiIGZpbGw9IiM0NDQiLz48L3N2Zz4=');
+        }
+
+        .crystal-ball {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+PGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMjAiIGZpbGw9IiM3NmQ3ZWEiIGZpbGwtb3BhY2l0eT0iMC43Ii8+PGNpcmNsZSBjeD0iMTgiIGN5PSIxOCIgcj0iNSIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC41Ii8+PHBhdGggZD0iTTE1IDQwIEgzNSBMIDI1IDQ4IFoiIGZpbGw9IiM2NjYiLz48L3N2Zz4=');
+        }
+
+        .scroll {
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+PHBhdGggZD0iTTUgMTAgQzUgNSA0NSA1IDQ1IDEwIEw0NSA0MCBDNCA0NSA1IDQwIDUgNDAgWiIgZmlsbD0iI2U4Y2M4YSIgc3Ryb2tlPSIjYmI5OTY2IiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNMTAgMTUgTDQwIDE1IE0xMCAyMCBMMzAgMjAgTTEwIDI1IEwzNSAyNSBNMTAgMzAgTDI1IDMwIiBzdHJva2U9IiNiYjk5NjYiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg==');
+        }
+
+        /* Progress Tracking Bar */
+        .progress-bar {
+            width: 100%;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            position: relative;
+            margin-bottom: 20px;
+            padding: 5px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .progress-steps {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            padding: 0 5px;
+        }
+
+        .progress-step {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .step-marker {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #333;
+            position: relative;
+            z-index: 2;
+            border: 2px solid #555;
+            transition: all 0.3s ease;
+        }
+
+        .step-marker.completed {
+            background: #4CAF50;
+            border-color: #2e7d32;
+            box-shadow: 0 0 10px #4CAF50;
+        }
+
+        .step-marker.current {
+            background: #FFC107;
+            border-color: #FF9800;
+            box-shadow: 0 0 15px #FFC107;
+            transform: scale(1.2);
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: #555;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            transition: width 0.5s ease;
+        }
+
+        /* Rainbow Effect */
+        .rainbow-effect {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 75px;
+            border-radius: 150px 150px 0 0;
+            background: linear-gradient(to right, 
+                rgba(255, 0, 0, 0.4), 
+                rgba(255, 165, 0, 0.4), 
+                rgba(255, 255, 0, 0.4), 
+                rgba(0, 128, 0, 0.4), 
+                rgba(0, 0, 255, 0.4), 
+                rgba(75, 0, 130, 0.4), 
+                rgba(238, 130, 238, 0.4));
+            opacity: 0.8;
+            z-index: 10;
+            filter: blur(3px);
+            animation: glow 3s infinite alternate;
+        }
+
+        /* Cauldron Section */
+        .cauldron-section {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .target-pattern {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .target-label {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 5px 15px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .target-slot {
+            width: 40px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .target-potion {
+            width: 36px;
+            height: 56px;
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .hidden-potion {
+            background-image: radial-gradient(ellipse at center, #777777 60%, #444444);
+            border: 2px solid #999999;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 60%;
+            position: relative;
+        }
+        
+        .hidden-potion::after {
+            content: "?";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 3px black;
+        }
+
+        .cauldron-container {
+            width: 220px;
+            height: 180px;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        /* Updated cauldron to be golden/bronze */
+        .cauldron {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #d4af37, #b8860b);
+            border-radius: 50% 50% 10% 10% / 60% 60% 40% 40%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 -5px 10px rgba(0, 0, 0, 0.3);
+            border: 8px solid #966f33;
+            z-index: 1;
+        }
+
+        .cauldron::before {
+            content: "";
+            position: absolute;
+            width: 120%;
+            height: 60px;
+            background: #966f33;
+            top: -30px;
+            left: -10%;
+            border-radius: 50%;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .cauldron-handles {
+            position: absolute;
+            width: 120%;
+            height: 100%;
+            top: 0;
+            left: -10%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .cauldron-handle {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            border-radius: 50% 50% 0 0;
+            border: 8px solid #966f33;
+            border-bottom: none;
+        }
+
+        .cauldron-handle.left {
+            left: 0;
+            top: 40px;
+            transform: rotate(-30deg);
+        }
+
+        .cauldron-handle.right {
+            right: 0;
+            top: 40px;
+            transform: rotate(30deg);
+        }
+
+        .cauldron-liquid {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: linear-gradient(to bottom, rgba(76, 175, 80, 0.7), rgba(0, 128, 0, 0.9));
+            border-radius: 0 0 10% 10% / 0 0 20% 20%;
+            animation: bubble 2s infinite ease-in-out;
+            z-index: 2;
+        }
+
+        .cauldron-bubbles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            bottom: 0;
+            left: 0;
+            z-index: 3;
+        }
+
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+        }
+
+        .cauldron-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50% 50% 10% 10% / 60% 60% 40% 40%;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.7);
+            opacity: 0.5;
+            animation: glow 2s infinite alternate;
+            z-index: 0;
+        }
+
+        .formula-slots {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 5;
+        }
+
+        .formula-slot {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 255, 255, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .formula-slot.filled {
+            border: 2px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .formula-slot.hint-highlight {
+            animation: pulse-highlight 1s infinite alternate;
+        }
+
+        .formula-potion {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Shelf Section */
+        .shelf-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .shelf {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, #8B4513, #5e2c0a);
+            border-radius: 10px;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3), inset 0 5px 5px rgba(255, 255, 255, 0.1);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .shelf::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: #9b642f;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .shelf-slot {
+            width: 60px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .shelf-slot.highlight {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+        }
+
+        .potion-stack {
+            width: 50px;
+            height: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        /* Updated potion styling to match the image */
+        .potion {
+            width: 65x;
+            height: 90px;
+            border-radius: 10px 10px 25px 25px;
+            position: absolute;
+            bottom: 0;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease;
+            z-index: 10;
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .potion::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 15px;
+            background: #966f33;
+            border-radius: 5px;
+            z-index: -1;
+        }
+
+        .potion:hover {
+            transform: translateY(-5px);
+        }
+
+        .potion.dragging {
+            opacity: 0.8;
+            transform: scale(1.1);
+            z-index: 100;
+        }
+        
+        .potion.touching {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .potion.hint-highlight {
+            animation: pulse-highlight 1s infinite alternate;
+        }
+
+        /* Updated potion colors with more vibrant gradient and highlights */
+        .potion-red {
+            background-image: radial-gradient(ellipse at center, #ff5555 60%, #cc0000);
+            border: 2px solid #ff8080;
+        }
+
+        .potion-blue {
+            background-image: radial-gradient(ellipse at center, #5599ff 60%, #0044cc);
+            border: 2px solid #80b3ff;
+        }
+
+        .potion-green {
+            background-image: radial-gradient(ellipse at center, #55ff55 60%, #00cc00);
+            border: 2px solid #80ff80;
+        }
+
+        .potion-yellow {
+            background-image: radial-gradient(ellipse at center, #ffff55 60%, #cccc00);
+            border: 2px solid #ffff80;
+        }
+
+        .potion-purple {
+            background-image: radial-gradient(ellipse at center, #aa55ff 60%, #6600cc);
+            border: 2px solid #cc80ff;
+        }
+
+        .potion-orange {
+            background-image: radial-gradient(ellipse at center, #ffaa55 60%, #cc6600);
+            border: 2px solid #ffcc80;
+        }
+
+        .potion-teal {
+            background-image: radial-gradient(ellipse at center, #55ffaa 60%, #00cc66);
+            border: 2px solid #80ffcc;
+        }
+
+        .potion.stacked:nth-child(1) { bottom: 0; z-index: 4; }
+        .potion.stacked:nth-child(2) { bottom: 10px; z-index: 3; }
+        .potion.stacked:nth-child(3) { bottom: 20px; z-index: 2; }
+        .potion.stacked:nth-child(4) { bottom: 30px; z-index: 1; }
+
+        /* Potion Effects */
+        .potion-spark {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            pointer-events: none;
+            animation: sparkle 1s linear forwards;
+        }
+
+        .splash-effect {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: 5;
+            animation: splash 0.5s ease-out forwards;
+        }
+
+        .correct-indicator {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 25px;
+            height: 25px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
+            z-index: 5;
+            animation: popIn 0.3s ease-out;
+        }
+        
+        .partial-indicator {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 25px;
+            height: 25px;
+            background: #FFC107;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.7);
+            z-index: 5;
+            animation: popIn 0.3s ease-out;
+        }
+
+        .wrong-indicator {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 25px;
+            height: 25px;
+            background: #f44336;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(244, 67, 54, 0.7);
+            z-index: 5;
+            animation: popIn 0.3s ease-out;
+        }
+
+        /* Controls */
+        .controls-section {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            min-height: 50px;
+        }
+
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn.pulse {
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        .check-btn {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #f44336, #e91e63);
+        }
+
+        .hint-btn {
+            background: linear-gradient(45deg, #2196F3, #03A9F4);
+        }
+
+        .skip-btn {
+            background: linear-gradient(45deg, #FF9800, #FFC107);
+        }
+
+        /* Success Overlay */
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .success-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .success-message {
+            font-size: 48px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 10px #FFA500, 0 0 20px #FF8C00;
+            margin-bottom: 30px;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        .reward-container {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, #FFD700, #FF8C00);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 30px #FFD700;
+            margin-bottom: 30px;
+            position: relative;
+            animation: spin 10s linear infinite;
+        }
+
+        .reward-icon {
+            width: 100px;
+            height: 100px;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDEyYzEuNjUgMCAzLTEuMzUgMy0zcy0xLjM1LTMtMy0zLTMgMS4zNS0zIDMgMS4zNSAzIDMgM3ptLTkgOGMwLTMuOTkgNi0zLjk5IDktNi4wMiAzIDIuMDMgOSAyLjAzIDkgNi4wMiAwIDEuMTEtLjkgMi0yIDJINWMtMS4xIDAtMi0uODktMi0yeiIvPjwvc3ZnPg==');
+            background-size: cover;
+            animation: spin 5s linear infinite reverse;
+        }
+
+        .reward-value {
+            position: absolute;
+            bottom: -20px;
+            background: #333;
+            color: #FFD700;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .next-level-btn {
+            padding: 15px 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            min-width: 200px;
+            min-height: 60px;
+        }
+
+        .next-level-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #7b4397, #5a3278);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-cauldron {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            margin-bottom: 50px;
+        }
+
+        .loading-liquid {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: linear-gradient(to bottom, rgba(76, 175, 80, 0.7), rgba(0, 128, 0, 0.9));
+            border-radius: 0 0 10% 10% / 0 0 20% 20%;
+            animation: loading-bubble 1.5s infinite ease-in-out;
+        }
+
+        .loading-text {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            animation: loading-pulse 1.5s infinite alternate;
+        }
+
+        /* Tutorial */
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            pointer-events: none;
+        }
+
+        .tutorial-highlight {
+            position: absolute;
+            border: 3px solid #FFC107;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.7);
+            pointer-events: none;
+            animation: highlight-pulse 1.5s infinite alternate;
+        }
+
+        .tutorial-text {
+            position: absolute;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 300px;
+            text-align: center;
+            font-size: 16px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            pointer-events: auto;
+        }
+
+        .tutorial-next {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: #FFC107;
+            color: black;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Install Banner */
+        .install-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            color: white;
+            z-index: 100;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .install-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        #installButton {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 20px;
+        }
+
+        #dismissInstall {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* Achievement Notification */
+        .achievement-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: transform 0.5s ease;
+        }
+
+        .achievement-notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .achievement-icon {
+            font-size: 30px;
+        }
+
+        .achievement-text {
+            color: white;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #FFC107;
+        }
+
+        .achievement-desc {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Hint Path and Arrow */
+        .hint-arrow {
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            text-shadow: 0 0 5px black;
+            z-index: 1000;
+            text-align: center;
+            width: 200px;
+            animation: pulse 1s infinite alternate;
+        }
+
+        .color-hint {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            box-shadow: 0 0 15px white;
+            z-index: 1000;
+            animation: pulse 1s infinite alternate;
+        }
+
+        /* Animations */
+        @keyframes bubble {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes glow {
+            0% { opacity: 0.3; box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
+            100% { opacity: 0.7; box-shadow: 0 0 30px rgba(76, 175, 80, 0.9); }
+        }
+
+        @keyframes sparkle {
+            0% { transform: scale(0); opacity: 1; }
+            50% { opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        @keyframes splash {
+            0% { transform: scale(0.5); opacity: 0.8; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        @keyframes pulse-highlight {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+            100% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+        }
+
+        @keyframes highlight-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+            100% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0); }
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes loading-bubble {
+            0% { height: 60%; }
+            50% { height: 70%; }
+            100% { height: 60%; }
+        }
+
+        @keyframes loading-pulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 20px;
+            }
+
+            .level-indicator, .score-display {
+                padding: 6px 10px;
+                font-size: 14px;
+            }
+
+            .cauldron-container {
+                width: 180px;
+                height: 150px;
+            }
+
+            .formula-slot {
+                width: 30px;
+                height: 30px;
+            }
+
+            .formula-potion {
+                width: 26px;
+                height: 26px;
+            }
+
+            .shelf {
+                height: 90px;
+                gap: 15px;
+            }
+
+            .shelf-slot {
+                width: 50px;
+                height: 70px;
+            }
+
+            .potion {
+                width: 40px;
+                height: 60px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+
+            .success-message {
+                font-size: 36px;
+            }
+
+            .reward-container {
+                width: 150px;
+                height: 150px;
+            }
+
+            .reward-icon {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .side-shelves {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .game-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .cauldron-container {
+                width: 150px;
+                height: 120px;
+            }
+
+            .formula-slots {
+                gap: 6px;
+            }
+
+            .formula-slot {
+                width: 24px;
+                height: 24px;
+            }
+
+            .formula-potion {
+                width: 20px;
+                height: 20px;
+            }
+
+            /* Make potions easier to touch */
+            .potion {
+                width: 40px;
+                height: 60px;
+                min-height: 60px; /* Ensure minimum touch target size */
+            }
+            
+            .shelf-slot {
+                width: 45px;
+                height: 65px;
+            }
+            
+            /* Fixed bottom controls */
+            .controls-section {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                padding: 10px;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                z-index: 100;
+                margin: 0;
+            }
+            
+            .btn {
+                padding: 15px 0;
+                font-size: 16px;
+                width: 100%;
+                min-height: 50px; /* Better touch targets */
+            }
+            
+            /* Add padding to bottom of page to account for fixed controls */
+            .game-container {
+                padding-bottom: 140px;
+            }
+            
+            /* Clearer indicators for mobile */
+            .correct-indicator, .wrong-indicator, .partial-indicator {
+                width: 30px;
+                height: 30px;
+                font-size: 18px;
+            }
+
+            .target-slot {
+                width: 30px;
+                height: 50px;
+            }
+
+            .target-potion {
+                width: 28px;
+                height: 48px;
+            }
+            
+            .rainbow-effect {
+                width: 120px;
+                height: 60px;
+                top: -30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen">
+        <div class="loading-cauldron">
+            <div class="loading-liquid"></div>
+            <div class="loading-text">Loading Magic...</div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <!-- Header Section -->
+        <div class="game-header">
+            <div class="game-title">Magic Cauldron</div>
+            <div class="game-info">
+                <div class="level-indicator">Step 1/15</div>
+                <div class="score-display">Score: 0</div>
+                <div class="attempts-counter">20</div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-steps" id="progressSteps">
+                <!-- Progress steps will be generated dynamically -->
+            </div>
+            <div class="progress-line">
+                <div class="progress-fill" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+            Match the potion sequence! You can only move the top potion from each shelf.
+        </div>
+
+        <!-- Decorative Side Shelves -->
+        <div class="side-shelves">
+            <div class="left-shelf">
+                <div class="shelf-item book" style="top: 10px; left: 20px;"></div>
+                <div class="shelf-item potion-shelf" style="top: 10px; left: 60px;"></div>
+                <div class="shelf-item crystal-ball" style="top: 110px; left: 30px;"></div>
+                <div class="shelf-item scroll" style="top: 210px; left: 50px;"></div>
+            </div>
+            <div class="right-shelf">
+                <div class="shelf-item potion-shelf" style="top: 10px; left: 10px;"></div>
+                <div class="shelf-item book" style="top: 10px; left: 50px;"></div>
+                <div class="shelf-item scroll" style="top: 110px; left: 20px;"></div>
+                <div class="shelf-item crystal-ball" style="top: 210px; left: 40px;"></div>
+            </div>
+        </div>
+
+        <!-- Cauldron Section -->
+        <div class="cauldron-section">
+            <div class="target-pattern">
+                <div class="target-label">Target Formula</div>
+                <!-- Target pattern will be generated dynamically -->
+            </div>
+
+            <div class="cauldron-container">
+                <!-- Rainbow Effect -->
+                <div class="rainbow-effect"></div>
+                
+                <div class="cauldron-handles">
+                    <div class="cauldron-handle left"></div>
+                    <div class="cauldron-handle right"></div>
+                </div>
+                <div class="cauldron">
+                    <div class="cauldron-liquid"></div>
+                    <div class="cauldron-bubbles" id="cauldronBubbles">
+                        <!-- Bubbles will be generated dynamically -->
+                    </div>
+                    <div class="formula-slots" id="formulaSlots">
+                        <!-- Formula slots will be generated dynamically -->
+                    </div>
+                </div>
+                <div class="cauldron-glow"></div>
+            </div>
+        </div>
+
+        <!-- Shelf Section -->
+        <div class="shelf-section">
+            <!-- Shelves will be generated dynamically -->
+        </div>
+
+        <!-- Controls Section -->
+        <div class="controls-section">
+            <button class="btn check-btn" id="checkBtn" disabled>Check Match</button>
+            <button class="btn reset-btn" id="resetBtn">Reset Level</button>
+            <button class="btn hint-btn" id="hintBtn">Hint</button>
+            <button class="btn skip-btn" id="skipBtn">Skip Level</button>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-message">SUCCESS!</div>
+        <div class="reward-container">
+            <div class="reward-icon"></div>
+            <div class="reward-value">+100</div>
+        </div>
+        <button class="next-level-btn" id="nextLevelBtn">Next Step</button>
+    </div>
+
+    <script>
+        // Game Configuration
+        const config = {
+            maxLevels: 15,
+            maxSlotsPerShelf: 4,
+            maxAttempts: 20,
+            colors: ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'teal'],
+            rewardValues: [50, 75, 100, 125, 150, 175, 200, 250, 300, 350, 400, 450, 500, 600, 1000],
+            levelFormulas: [
+                // Level 1 - 3 potions, 3 colors
+                { length: 3, colors: 3 },
+                // Level 2 - 3 potions, 4 colors
+                { length: 3, colors: 4 },
+                // Level 3 - 3 potions, 5 colors
+                { length: 3, colors: 5 },
+                // Level 4 - 4 potions, 4 colors
+                { length: 4, colors: 4 },
+                // Level 5 - 4 potions, 5 colors
+                { length: 4, colors: 5 },
+                // Level 6 - 4 potions, 6 colors
+                { length: 4, colors: 6 },
+                // Level 7 - 5 potions, 4 colors
+                { length: 5, colors: 4 },
+                // Level 8 - 5 potions, 5 colors
+                { length: 5, colors: 5 },
+                // Level 9 - 5 potions, 6 colors
+                { length: 5, colors: 6 },
+                // Level 10 - 5 potions, 7 colors
+                { length: 5, colors: 7 },
+                // Level 11 - 6 potions, 5 colors
+                { length: 6, colors: 5 },
+                // Level 12 - 6 potions, 6 colors
+                { length: 6, colors: 6 },
+                // Level 13 - 6 potions, 7 colors
+                { length: 6, colors: 7 },
+                // Level 14 - 6 potions, 7 colors (harder distribution)
+                { length: 6, colors: 7 },
+                // Level 15 - 6 potions, 7 colors (grand finale)
+                { length: 6, colors: 7 }
+            ],
+            hideTargetFormula: true, // Set to true to hide actual colors
+            showTutorial: true // Set to true to show tutorial on first load
+        };
+
+        // Game state
+        const gameState = {
+            currentLevel: 1,
+            score: 0,
+            completedLevels: [],
+            targetFormula: [],
+            currentFormula: [],
+            shelvesContent: [[], [], []],
+            draggingElement: null,
+            dragSourceElement: null,
+            hintUsed: false,
+            attempts: config.maxAttempts,
+            lockedPositions: [], // To track which positions are locked (correct)
+            gameStartTime: 0, // Track when the level started
+            levelTimes: [] // Track completion times for achievements
+        };
+
+        // Achievements system
+        const achievements = [
+            {id: 'first_complete', title: 'First Formula', description: 'Complete your first formula', icon: '🧪', unlocked: false},
+            {id: 'no_mistakes', title: 'Perfect Brew', description: 'Complete a level with no mistakes', icon: '🌟', unlocked: false},
+            {id: 'speed_demon', title: 'Speed Alchemist', description: 'Complete a formula in under 10 seconds', icon: '⚡', unlocked: false},
+            {id: 'complete_all', title: 'Master Wizard', description: 'Complete all 15 levels', icon: '👑', unlocked: false}
+        ];
+
+        // DOM Elements
+        const levelIndicator = document.querySelector('.level-indicator');
+        const scoreDisplay = document.querySelector('.score-display');
+        const attemptCounter = document.querySelector('.attempts-counter');
+        const targetPattern = document.querySelector('.target-pattern');
+        const shelfSection = document.querySelector('.shelf-section');
+        const checkBtn = document.getElementById('checkBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const hintBtn = document.getElementById('hintBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        const successOverlay = document.getElementById('successOverlay');
+        const nextLevelBtn = document.getElementById('nextLevelBtn');
+        const progressSteps = document.getElementById('progressSteps');
+        const cauldronLiquid = document.querySelector('.cauldron-liquid');
+        const formulaSlots = document.getElementById('formulaSlots');
+        const cauldronBubbles = document.getElementById('cauldronBubbles');
+        const progressFill = document.querySelector('.progress-fill');
+        const rainbowEffect = document.querySelector('.rainbow-effect');
+        const loadingScreen = document.querySelector('.loading-screen');
+
+        // Sound effects (using base64 for standalone HTML)
+        const sounds = {
+            pickup: new Audio("data:audio/mp3;base64,SUQzBAAAAAAAF1RTU0UAAAANAAADTGF2ZjU3LjQxLjEwMAD/+5DEAAAAAAAAAAAAAAAAAAAAAABJbmZvAAAABwAAABIAACwgABgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICBgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICP/8AACwgABgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICBgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICP/8AACwgAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQAP/7UMQAAAesTXu0EAAg1A2ucKAABOQlllllllllgAAA"),
+            drop: new Audio("data:audio/mp3;base64,SUQzBAAAAAAAF1RTU0UAAAANAAADTGF2ZjU3LjQxLjEwMAD/+5DEAAAAAAAAAAAAAAAAAAAAAABJbmZvAAAABwAAABIAACxAABgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICBgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICP/8AACxAABgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICBgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICP/8AACxAAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQAP/7UMQAAAf0VYeUEAAhKo2w8MAABKBlllllllllgAAA"),
+            success: new Audio("data:audio/mp3;base64,SUQzBAAAAAAAF1RTU0UAAAANAAADTGF2ZjU3LjQxLjEwMAD/+5DEAAAAAAAAAAAAAAAAAAAAAABJbmZvAAAABwAAABIAAC5gABgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICBgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICP/8AAC5gABgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICBgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICP/8AAC5gAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQAP/7UMQAAAiQXY+0EAAhJA2y8IAABCglllllllllgAAA"),
+            wrong: new Audio("data:audio/mp3;base64,SUQzBAAAAAAAF1RTU0UAAAANAAADTGF2ZjU3LjQxLjEwMAD/+5DEAAAAAAAAAAAAAAAAAAAAAABJbmZvAAAABwAAABIAAC5AABgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICBgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICP/8AAC5AABgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICBgYGCgoKDg4OEhISFhYWGhoaHh4eIiIiJiYmKioqLi4uMjIyNjY2Ojo6Pj4+AgICP/8AAC5AAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQAP/7UMQAAAisXYeUEAAhPA2z8IAABEglllllllllgAAA")
+        };
+
+        // Initialize the game
+        function initGame() {
+            // Load saved achievements
+            loadAchievements();
+            
+            // Load saved progress
+            loadGameProgress();
+            
+            // Create progress bar
+            createProgressBar();
+            
+            // Create cauldron bubbles
+            createBubbles();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Generate level
+            generateLevel(gameState.currentLevel);
+            
+            // Update score display
+            updateScoreDisplay();
+            
+            // Update attempts display
+            updateAttemptsDisplay();
+            
+            // Set up mobile-specific features
+            setupSwipeGestures();
+            
+            // Set up PWA features
+            setupProgressiveWebApp();
+            
+            // Check if first time playing and show tutorial if needed
+            if (config.showTutorial && !localStorage.getItem('tutorialComplete')) {
+                setTimeout(showTutorial, 1500);
+            }
+            
+            // Hide loading screen
+            setTimeout(() => {
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => loadingScreen.remove(), 500);
+            }, 1000);
+        }
+
+        // Create cauldron bubbles
+        function createBubbles() {
+            cauldronBubbles.innerHTML = '';
+            for (let i = 0; i < 15; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // Random size, position and animation delay
+                const size = 5 + Math.random() * 15;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.bottom = `${Math.random() * 70}%`;
+                bubble.style.animationDuration = `${2 + Math.random() * 3}s`;
+                bubble.style.animationDelay = `${Math.random() * 3}s`;
+                
+                cauldronBubbles.appendChild(bubble);
+            }
+        }
+
+        // Create progress bar steps
+        function createProgressBar() {
+            progressSteps.innerHTML = '';
+            for (let i = 1; i <= config.maxLevels; i++) {
+                const step = document.createElement('div');
+                step.classList.add('progress-step');
+                
+                const marker = document.createElement('div');
+                marker.classList.add('step-marker');
+                marker.dataset.level = i;
+                
+                if (gameState.completedLevels.includes(i)) {
+                    marker.classList.add('completed');
+                }
+                
+                if (i === gameState.currentLevel) {
+                    marker.classList.add('current');
+                }
+                
+                step.appendChild(marker);
+                progressSteps.appendChild(step);
+            }
+            
+            // Update progress fill
+            const progress = (gameState.completedLevels.length / config.maxLevels) * 100;
+            progressFill.style.width = `${progress}%`;
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            checkBtn.addEventListener('click', checkFormula);
+            resetBtn.addEventListener('click', resetLevel);
+            hintBtn.addEventListener('click', showHint);
+            skipBtn.addEventListener('click', skipLevel);
+            nextLevelBtn.addEventListener('click', goToNextLevel);
+            
+            // Enable touch for mobile
+            document.addEventListener('touchmove', function(e) {
+                if (gameState.draggingElement) {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    handleDrag(touch.clientX, touch.clientY);
+                }
+            }, { passive: false });
+            
+            document.addEventListener('touchend', function() {
+                if (gameState.draggingElement) {
+                    handleDrop();
+                }
+            });
+        }
+
+        // Generate a level
+        function generateLevel(level) {
+            // Reset level timer
+            gameState.gameStartTime = Date.now();
+            
+            // Update level indicator
+            levelIndicator.textContent = `Step ${level}/${config.maxLevels}`;
+            
+            // Reset game state for new level
+            gameState.currentFormula = [];
+            gameState.shelvesContent = [[], [], []];
+            gameState.hintUsed = false;
+            gameState.attempts = config.maxAttempts;
+            gameState.lockedPositions = [];
+            updateAttemptsDisplay();
+            
+            // Get level configuration
+            const levelConfig = config.levelFormulas[level - 1];
+            const formulaLength = levelConfig.length;
+            const colorCount = levelConfig.colors;
+            
+            // Generate target formula first
+            gameState.targetFormula = [];
+            const availableColors = [...config.colors].slice(0, colorCount);
+            
+            for (let i = 0; i < formulaLength; i++) {
+                const colorIndex = Math.floor(Math.random() * availableColors.length);
+                gameState.targetFormula.push(availableColors[colorIndex]);
+            }
+            
+            // Set up target pattern display
+            setupTargetPattern();
+            
+            // Set up formula slots
+            setupFormulaSlots(formulaLength);
+            
+            // Set up shelves with potions ensuring the target formula can be made
+            setupShelves(formulaLength, colorCount);
+            
+            // Update cauldron liquid color based on target formula
+            updateCauldronColor();
+            
+            // Update progress bar
+            createProgressBar();
+            
+            // Update rainbow effect animation
+            animateRainbow();
+            
+            // Enable hint button if it was disabled
+            hintBtn.disabled = false;
+            hintBtn.classList.remove('disabled');
+        }
+
+        // Animate rainbow effect
+        function animateRainbow() {
+            rainbowEffect.style.animation = 'glow 3s infinite alternate';
+        }
+
+        // Set up target pattern display
+        function setupTargetPattern() {
+            // Clear previous target pattern
+            targetPattern.innerHTML = '<div class="target-label">Target Formula</div>';
+            
+            // Create slots for each potion in target formula
+            gameState.targetFormula.forEach(color => {
+                const slot = document.createElement('div');
+                slot.classList.add('target-slot');
+                
+                if (config.hideTargetFormula) {
+                    // Create hidden/mystery potions if config is set to hide
+                    const hiddenPotion = document.createElement('div');
+                    hiddenPotion.classList.add('target-potion', 'hidden-potion');
+                    slot.appendChild(hiddenPotion);
+                } else {
+                    // Show actual color potions
+                    const potion = document.createElement('div');
+                    potion.classList.add('target-potion', `potion-${color}`);
+                    slot.appendChild(potion);
+                }
+                
+                targetPattern.appendChild(slot);
+            });
+        }
+
+        // Set up formula slots in cauldron
+        function setupFormulaSlots(count) {
+            formulaSlots.innerHTML = '';
+            
+            for (let i = 0; i < count; i++) {
+                const slot = document.createElement('div');
+                slot.classList.add('formula-slot');
+                slot.dataset.index = i;
+                
+                formulaSlots.appendChild(slot);
+            }
+        }
+
+        // Set up shelves with potions ensuring solvability
+        function setupShelves(formulaLength, colorCount) {
+            shelfSection.innerHTML = '';
+            
+            // Create shelves
+            for (let i = 0; i < 3; i++) {
+                const shelf = document.createElement('div');
+                shelf.classList.add('shelf');
+                shelf.dataset.index = i;
+                
+                // Create slots on each shelf
+                for (let j = 0; j < config.maxSlotsPerShelf; j++) {
+                    const slot = document.createElement('div');
+                    slot.classList.add('shelf-slot');
+                    slot.dataset.shelf = i;
+                    slot.dataset.position = j;
+                    
+                    shelf.appendChild(slot);
+                }
+                
+                // Add to DOM
+                shelfSection.appendChild(shelf);
+            }
+            
+            // IMPORTANT: Ensure each color in the target formula is available
+            // First, we'll make sure all target formula colors are distributed on shelves
+            const potionsToDistribute = [...gameState.targetFormula];
+            
+            // Shuffle to randomize initial distribution
+            shuffleArray(potionsToDistribute);
+            
+            // Add extra potions to make the puzzle more challenging
+            // Add some decoy colors, but not too many
+            const extraColors = [];
+            const availableColors = [...config.colors].slice(0, colorCount);
+            
+            // Calculate how many extra potions to add - enough to make it challenging but solvable
+            const extraCount = Math.min(6, (formulaLength <= 3) ? 3 : formulaLength);
+            
+            for (let i = 0; i < extraCount; i++) {
+                // 50% chance to add a decoy, 50% chance to duplicate a target color
+                if (Math.random() > 0.5) {
+                    // Add a random color that might or might not be in the target
+                    const randomColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+                    extraColors.push(randomColor);
+                } else {
+                    // Duplicate a color from the target
+                    const targetColor = gameState.targetFormula[Math.floor(Math.random() * gameState.targetFormula.length)];
+                    extraColors.push(targetColor);
+                }
+            }
+            
+            // Combine target formula potions and extra potions
+            let allPotions = [...potionsToDistribute, ...extraColors];
+            shuffleArray(allPotions);
+            
+            // Now distribute potions across shelves
+            const shelves = [[], [], []];
+            
+            // Add potions to shelves evenly
+            while (allPotions.length > 0) {
+                for (let i = 0; i < 3 && allPotions.length > 0; i++) {
+                    if (shelves[i].length < config.maxSlotsPerShelf) {
+                        shelves[i].push(allPotions.pop());
+                    }
+                }
+            }
+            
+            // Update gameState.shelvesContent and render potions on shelves
+            for (let i = 0; i < 3; i++) {
+                gameState.shelvesContent[i] = shelves[i];
+                const shelfSlots = document.querySelectorAll(`.shelf-slot[data-shelf="${i}"]`);
+                
+                shelves[i].forEach((color, j) => {
+                    const potion = document.createElement('div');
+                    potion.classList.add('potion', `potion-${color}`, 'stacked');
+                    potion.dataset.color = color;
+                    
+                    // Set up drag events
+                    setupPotionDragEvents(potion);
+                    
+                    // Add to shelf
+                    shelfSlots[j].appendChild(potion);
+                });
+            }
+            
+            // Update which potions are draggable (only the top ones)
+            updateDraggablePotions();
+        }
+
+        // Helper function to shuffle an array (Fisher-Yates algorithm)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Set up drag events for a potion
+        function setupPotionDragEvents(potion) {
+            // Mouse events
+            potion.addEventListener('mousedown', function(e) {
+                if (this.classList.contains('draggable')) {
+                    startDrag(this, e.clientX, e.clientY);
+                    e.preventDefault();
+                }
+            });
+            
+            // Touch events with larger hitbox
+            potion.addEventListener('touchstart', function(e) {
+                if (this.classList.contains('draggable')) {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    
+                    // Add touch feedback
+                    this.classList.add('touching');
+                    
+                    // Delay drag start slightly to distinguish tap from drag
+                    this.touchTimeout = setTimeout(() => {
+                        startDrag(this, touch.clientX, touch.clientY);
+                        // Vibration feedback if supported
+                        if (navigator.vibrate) {
+                            navigator.vibrate(50);
+                        }
+                    }, 100);
+                }
+            }, { passive: false });
+            
+            // Handle touch cancel
+            potion.addEventListener('touchcancel', function(e) {
+                if (this.touchTimeout) {
+                    clearTimeout(this.touchTimeout);
+                }
+                this.classList.remove('touching');
+            });
+            
+            // Add tap to select functionality for easier mobile play
+            potion.addEventListener('touchend', function(e) {
+                if (this.classList.contains('draggable') && !gameState.draggingElement) {
+                    if (this.touchTimeout) {
+                        clearTimeout(this.touchTimeout);
+                    }
+                    
+                    // Simple tap detected - handle automatic placement
+                    handleTapToPlace(this);
+                    e.preventDefault();
+                }
+                this.classList.remove('touching');
+            });
+        }
+
+        // Add tap-to-place functionality for easier mobile play
+        function handleTapToPlace(potion) {
+            // Find next empty formula slot
+            const emptySlot = document.querySelector('.formula-slot:empty');
+            if (emptySlot) {
+                // Simulate drag and drop
+                gameState.dragSourceElement = potion.parentElement;
+                
+                // Play pickup sound
+                sounds.pickup.currentTime = 0;
+                sounds.pickup.play();
+                
+                // Do animated movement
+                const sourceRect = potion.getBoundingClientRect();
+                const targetRect = emptySlot.getBoundingClientRect();
+                
+                // Create animated clone
+                const clone = potion.cloneNode(true);
+                clone.style.position = 'fixed';
+                clone.style.top = sourceRect.top + 'px';
+                clone.style.left = sourceRect.left + 'px';
+                clone.style.width = sourceRect.width + 'px';
+                clone.style.height = sourceRect.height + 'px';
+                clone.style.zIndex = '1000';
+                clone.style.transition = 'all 0.3s ease-out';
+                
+                document.body.appendChild(clone);
+                
+                // Trigger animation
+                setTimeout(() => {
+                    clone.style.top = targetRect.top + 'px';
+                    clone.style.left = targetRect.left + 'px';
+                }, 10);
+                
+                // When animation completes
+                setTimeout(() => {
+                    clone.remove();
+                    
+                    // Update game state
+                    const shelfIndex = parseInt(gameState.dragSourceElement.dataset.shelf);
+                    const formulaIndex = parseInt(emptySlot.dataset.index);
+                    
+                    // Remove from shelf
+                    gameState.shelvesContent[shelfIndex].pop();
+                    
+                    // Add to formula
+                    gameState.currentFormula[formulaIndex] = potion.dataset.color;
+                    
+                    // Move the original potion
+                    emptySlot.appendChild(potion);
+                    emptySlot.classList.add('filled');
+                    
+                    // Play drop sound
+                    sounds.drop.currentTime = 0;
+                    sounds.drop.play();
+                    
+                    // Update draggable potions
+                    updateDraggablePotions();
+                    
+                    // Check if formula is complete
+                    checkFormulaComplete();
+                    
+                    // Create potion effect
+                    createPotionEffect(emptySlot, potion.dataset.color);
+                }, 300);
+            }
+        }
+
+        // Start dragging a potion
+        function startDrag(potion, clientX, clientY) {
+            // Play sound
+            sounds.pickup.currentTime = 0;
+            sounds.pickup.play();
+            
+            // Set the dragging element
+            gameState.draggingElement = potion;
+            gameState.dragSourceElement = potion.parentElement;
+            
+            // Create a visual dragging helper
+            const rect = potion.getBoundingClientRect();
+            
+            // Position the element absolutely
+            potion.style.position = 'fixed';
+            potion.style.top = rect.top + 'px';
+            potion.style.left = rect.left + 'px';
+            potion.style.width = rect.width + 'px';
+            potion.style.height = rect.height + 'px';
+            potion.style.margin = '0';
+            potion.style.zIndex = '1000';
+            potion.classList.add('dragging');
+            
+            // Set the offset (where within the element the drag started)
+            gameState.dragOffsetX = clientX - rect.left;
+            gameState.dragOffsetY = clientY - rect.top;
+            
+            // Move to the body so it can move freely
+            document.body.appendChild(potion);
+            
+            // Add mouse move and up events to document
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            
+            // Update drag visuals
+            updateDropTargets(true);
+        }
+
+        // Handle mouse move during drag
+        function handleMouseMove(e) {
+            handleDrag(e.clientX, e.clientY);
+        }
+
+        // Handle mouse up after drag
+        function handleMouseUp() {
+            handleDrop();
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        }
+
+        // Handle the drag movement
+        function handleDrag(clientX, clientY) {
+            if (!gameState.draggingElement) return;
+            
+            // Move the dragging element
+            gameState.draggingElement.style.left = (clientX - gameState.dragOffsetX) + 'px';
+            gameState.draggingElement.style.top = (clientY - gameState.dragOffsetY) + 'px';
+            
+            // Check if over a drop target
+            const dropTargets = document.querySelectorAll('.shelf-slot:empty, .formula-slot:empty');
+            let overTarget = null;
+            
+            dropTargets.forEach(target => {
+                const rect = target.getBoundingClientRect();
+                
+                if (clientX >= rect.left && clientX <= rect.right && 
+                    clientY >= rect.top && clientY <= rect.bottom) {
+                    target.classList.add('highlight');
+                    overTarget = target;
+                } else {
+                    target.classList.remove('highlight');
+                }
+            });
+        }
+
+        // Handle the drop
+        function handleDrop() {
+            if (!gameState.draggingElement) return;
+            
+            const potion = gameState.draggingElement;
+            const sourceSlot = gameState.dragSourceElement;
+            
+            // Reset potion styles
+            potion.style.position = '';
+            potion.style.top = '';
+            potion.style.left = '';
+            potion.style.margin = '';
+            potion.style.zIndex = '';
+            potion.style.width = '';
+            potion.style.height = '';
+            potion.classList.remove('dragging');
+            
+            // Find the highlighted drop target
+            const highlightedTarget = document.querySelector('.shelf-slot.highlight, .formula-slot.highlight');
+            
+            if (highlightedTarget) {
+                // Valid drop target
+                sounds.drop.currentTime = 0;
+                sounds.drop.play();
+                
+                // Handle drop to shelf or formula
+                if (highlightedTarget.classList.contains('shelf-slot')) {
+                    // Drop to shelf
+                    const shelfIndex = parseInt(highlightedTarget.dataset.shelf);
+                    const position = parseInt(highlightedTarget.dataset.position);
+                    
+                    // Remove from source
+                    if (sourceSlot.classList.contains('shelf-slot')) {
+                        const sourceShelf = parseInt(sourceSlot.dataset.shelf);
+                        gameState.shelvesContent[sourceShelf].pop();
+                    } else if (sourceSlot.classList.contains('formula-slot')) {
+                        const formulaIndex = parseInt(sourceSlot.dataset.index);
+                        gameState.currentFormula[formulaIndex] = null;
+                        
+                        // If this position was locked, unlock it
+                        const lockedIndex = gameState.lockedPositions.indexOf(formulaIndex);
+                        if (lockedIndex !== -1) {
+                            gameState.lockedPositions.splice(lockedIndex, 1);
+                        }
+                    }
+                    
+                    // Add to destination shelf
+                    gameState.shelvesContent[shelfIndex].push(potion.dataset.color);
+                    
+                    // Add visual effect
+                    createPotionEffect(highlightedTarget, potion.dataset.color);
+                    
+                } else if (highlightedTarget.classList.contains('formula-slot')) {
+                    // Drop to formula
+                    const formulaIndex = parseInt(highlightedTarget.dataset.index);
+                    
+                    // Skip if this position is locked
+                    if (gameState.lockedPositions.includes(formulaIndex)) {
+                        sourceSlot.appendChild(potion);
+                        
+                        // Clear all highlights
+                        document.querySelectorAll('.shelf-slot, .formula-slot').forEach(slot => {
+                            slot.classList.remove('highlight');
+                        });
+                        
+                        // Reset dragging state
+                        gameState.draggingElement = null;
+                        gameState.dragSourceElement = null;
+                        
+                        // Update drop targets
+                        updateDropTargets(false);
+                        
+                        return;
+                    }
+                    
+                    // Remove from source shelf if applicable
+                    if (sourceSlot.classList.contains('shelf-slot')) {
+                        const sourceShelf = parseInt(sourceSlot.dataset.shelf);
+                        gameState.shelvesContent[sourceShelf].pop();
+                    } else if (sourceSlot.classList.contains('formula-slot')) {
+                        const oldFormulaIndex = parseInt(sourceSlot.dataset.index);
+                        gameState.currentFormula[oldFormulaIndex] = null;
+                    }
+                    
+                    // Add to formula
+                    gameState.currentFormula[formulaIndex] = potion.dataset.color;
+                    
+                    // Mark slot as filled
+                    highlightedTarget.classList.add('filled');
+                    
+                    // Add visual effect
+                    createPotionEffect(highlightedTarget, potion.dataset.color);
+                }
+                
+                // Move potion to target
+                highlightedTarget.appendChild(potion);
+                
+            } else {
+                // No valid target, return to source
+                sourceSlot.appendChild(potion);
+            }
+            
+            // Clear all highlights
+            document.querySelectorAll('.shelf-slot, .formula-slot').forEach(slot => {
+                slot.classList.remove('highlight');
+            });
+            
+            // Reset dragging state
+            gameState.draggingElement = null;
+            gameState.dragSourceElement = null;
+            
+            // Update draggable potions
+            updateDraggablePotions();
+            
+            // Update drop targets
+            updateDropTargets(false);
+            
+            // Check if formula is complete
+            checkFormulaComplete();
+        }
+
+        // Create potion effect at position
+        function createPotionEffect(element, color) {
+            const rect = element.getBoundingClientRect();
+            
+            // Create sparkle effect
+            for (let i = 0; i < 5; i++) {
+                const spark = document.createElement('div');
+                spark.classList.add('potion-spark');
+                
+                spark.style.left = (rect.left + rect.width / 2 + (Math.random() - 0.5) * 30) + 'px';
+                spark.style.top = (rect.top + rect.height / 2 + (Math.random() - 0.5) * 30) + 'px';
+                
+                document.body.appendChild(spark);
+                
+                // Remove after animation
+                setTimeout(() => {
+                    spark.remove();
+                }, 1000);
+            }
+        }
+
+        // Update which potions are draggable
+        function updateDraggablePotions() {
+            // Remove draggable class from all potions
+            document.querySelectorAll('.potion').forEach(potion => {
+                potion.classList.remove('draggable');
+            });
+            
+            // Add draggable class to top potions on shelves
+            for (let i = 0; i < 3; i++) {
+                if (gameState.shelvesContent[i].length > 0) {
+                    const shelfSlots = document.querySelectorAll(`.shelf-slot[data-shelf="${i}"]`);
+                    const topSlot = shelfSlots[gameState.shelvesContent[i].length - 1];
+                    if (topSlot && topSlot.firstChild) {
+                        topSlot.firstChild.classList.add('draggable');
+                    }
+                }
+            }
+            
+            // Make potions in formula slots draggable too (except locked ones)
+            document.querySelectorAll('.formula-slot').forEach(slot => {
+                if (slot.firstChild) {
+                    const index = parseInt(slot.dataset.index);
+                    // Only make draggable if not locked
+                    if (!gameState.lockedPositions.includes(index)) {
+                        slot.firstChild.classList.add('draggable');
+                    }
+                }
+            });
+        }
+        
+        // Update drop targets availability
+        function updateDropTargets(isDragging) {
+            // Empty slots are potential drop targets
+            document.querySelectorAll('.shelf-slot, .formula-slot').forEach(slot => {
+                if (!slot.firstChild) {
+                    slot.classList.toggle('potential-target', isDragging);
+                }
+            });
+        }
+        
+        // Update cauldron liquid color based on target formula
+        function updateCauldronColor() {
+            if (gameState.targetFormula.length === 0) return;
+            
+            // Calculate average color from target potions
+            let r = 0, g = 0, b = 0;
+            gameState.targetFormula.forEach(color => {
+                switch (color) {
+                    case 'red':    r += 255; g += 20;  b += 20;  break;
+                    case 'blue':   r += 20;  g += 20;  b += 255; break;
+                    case 'green':  r += 20;  g += 200; b += 20;  break;
+                    case 'yellow': r += 255; g += 255; b += 20;  break;
+                    case 'purple': r += 150; g += 20;  b += 200; break;
+                    case 'orange': r += 255; g += 150; b += 20;  break;
+                    case 'teal':   r += 20;  g += 200; b += 200; break;
+                }
+            });
+            
+            r = Math.floor(r / gameState.targetFormula.length);
+            g = Math.floor(g / gameState.targetFormula.length);
+            b = Math.floor(b / gameState.targetFormula.length);
+            
+            // Set gradient for cauldron liquid
+            cauldronLiquid.style.background = `linear-gradient(to bottom, rgba(${r}, ${g}, ${b}, 0.7), rgba(${Math.floor(r*0.6)}, ${Math.floor(g*0.6)}, ${Math.floor(b*0.6)}, 0.9))`;
+            
+            // Update cauldron glow to match
+            document.querySelector('.cauldron-glow').style.boxShadow = `0 0 30px rgba(${r}, ${g}, ${b}, 0.7)`;
+        }
+        
+        // Check if formula slots are complete
+        function checkFormulaComplete() {
+            const formulaSlotElements = document.querySelectorAll('.formula-slot');
+            
+            // Check if all slots have potions
+            let isComplete = true;
+            formulaSlotElements.forEach(slot => {
+                if (!slot.firstChild) {
+                    isComplete = false;
+                }
+            });
+            
+            // Enable/disable check button based on completion
+            checkBtn.disabled = !isComplete;
+            
+            if (isComplete) {
+                checkBtn.classList.add('pulse');
+            } else {
+                checkBtn.classList.remove('pulse');
+            }
+        }
+        
+        // Check if the current formula matches the target
+        function checkFormula() {
+            // Decrease attempts
+            gameState.attempts--;
+            updateAttemptsDisplay();
+            
+            // Collect the current formula from the DOM
+            const formulaSlots = document.querySelectorAll('.formula-slot');
+            const currentFormula = Array.from(formulaSlots).map(slot => 
+                slot.firstChild ? slot.firstChild.dataset.color : null
+            );
+            
+            // Check if it matches the target formula
+            const isMatch = arraysEqual(currentFormula, gameState.targetFormula);
+            
+            if (isMatch) {
+                // Success!
+                handleSuccess();
+            } else {
+                // Wrong formula
+                handleWrong(currentFormula);
+                
+                // Check if out of attempts
+                if (gameState.attempts <= 0) {
+                    alert("Out of attempts! Try again or skip this level.");
+                    resetLevel();
+                }
+            }
+        }
+        
+        // Handle successful formula match
+        function handleSuccess() {
+            // Calculate time taken to complete the level
+            const timeElapsed = (Date.now() - gameState.gameStartTime) / 1000; // in seconds
+            gameState.levelTimes.push(timeElapsed);
+            
+            // Play success sound
+            sounds.success.currentTime = 0;
+            sounds.success.play();
+            
+            // Calculate reward
+            const reward = config.rewardValues[gameState.currentLevel - 1];
+            
+            // Update score
+            gameState.score += reward;
+            updateScoreDisplay();
+            
+            // Add level to completed levels
+            if (!gameState.completedLevels.includes(gameState.currentLevel)) {
+                gameState.completedLevels.push(gameState.currentLevel);
+            }
+            
+            // Update progress bar
+            createProgressBar();
+            
+            // Check for achievements
+            checkForAchievements(timeElapsed);
+            
+            // Show success overlay
+            document.querySelector('.reward-value').textContent = `+${reward}`;
+            successOverlay.classList.add('active');
+            
+            // Create celebration effects
+            createConfetti();
+            
+            // Intensify cauldron glow and bubbling
+            const cauldronGlow = document.querySelector('.cauldron-glow');
+            cauldronGlow.style.opacity = '1';
+            cauldronGlow.style.boxShadow = '0 0 50px gold';
+            
+            cauldronLiquid.style.animation = 'bubble 0.5s infinite ease-in-out';
+            
+            // Intensify rainbow effect
+            rainbowEffect.style.animation = 'glow 0.5s infinite alternate';
+            
+            // Show next level button if not last level
+            if (gameState.currentLevel < config.maxLevels) {
+                nextLevelBtn.textContent = 'Next Step';
+            } else {
+                nextLevelBtn.textContent = 'Claim Grand Prize!';
+            }
+            
+            // Save game progress
+            saveGameProgress();
+        }
+        
+        // Handle wrong formula
+        function handleWrong(currentFormula) {
+            // Play wrong sound
+            sounds.wrong.currentTime = 0;
+            sounds.wrong.play();
+            
+            // Add visual feedback on which potions are correct/incorrect
+            const formulaSlots = document.querySelectorAll('.formula-slot');
+            
+            // Create a copy of target formula for tracking partially correct colors
+            const targetCopy = [...gameState.targetFormula];
+            const currentCopy = [...currentFormula];
+            
+            // First mark exact matches (correct position and color)
+            for (let i = 0; i < formulaSlots.length; i++) {
+                const slot = formulaSlots[i];
+                const potion = slot.firstChild;
+                
+                if (currentFormula[i] === gameState.targetFormula[i]) {
+                    // Correct potion
+                    const correct = document.createElement('div');
+                    correct.classList.add('correct-indicator');
+                    correct.innerHTML = '✓';
+                    slot.appendChild(correct);
+                    
+                    // Lock this position
+                    if (!gameState.lockedPositions.includes(i)) {
+                        gameState.lockedPositions.push(i);
+                    }
+                    
+                    // Make this potion non-draggable (locked in)
+                    if (potion) {
+                        potion.classList.remove('draggable');
+                    }
+                    
+                    // Mark as used to avoid double-counting
+                    targetCopy[i] = null;
+                    currentCopy[i] = null;
+                }
+            }
+            
+            // Then check for right color in wrong position
+            for (let i = 0; i < formulaSlots.length; i++) {
+                if (currentCopy[i] === null) continue; // Skip already matched positions
+                
+                const slot = formulaSlots[i];
+                const potion = slot.firstChild;
+                
+                // Skip if no potion in this position
+                if (!potion) continue;
+                
+                const targetIndex = targetCopy.indexOf(currentCopy[i]);
+                if (targetIndex !== -1) {
+                    // Right color but wrong position
+                    const partial = document.createElement('div');
+                    partial.classList.add('partial-indicator');
+                    partial.innerHTML = '↺';
+                    slot.appendChild(partial);
+                    
+                    // Mark this color as used in the target copy
+                    targetCopy[targetIndex] = null;
+                    
+                    // Return the potion to a shelf (after a delay)
+                    setTimeout(() => {
+                        returnPotionToShelf(potion);
+                        
+                        // Update formula state
+                        const index = parseInt(slot.dataset.index);
+                        gameState.currentFormula[index] = null;
+                        
+                        // Remove filled class
+                        slot.classList.remove('filled');
+                    }, 1500);
+                } else {
+                    // Completely wrong color
+                    const wrong = document.createElement('div');
+                    wrong.classList.add('wrong-indicator');
+                    wrong.innerHTML = '✗';
+                    slot.appendChild(wrong);
+                    
+                    // Create splash effect
+                    createSplashEffect(slot, potion.dataset.color);
+                    
+                    // Return the potion to a shelf (after a delay)
+                    setTimeout(() => {
+                        returnPotionToShelf(potion);
+                        
+                        // Update formula state
+                        const index = parseInt(slot.dataset.index);
+                        gameState.currentFormula[index] = null;
+                        
+                        // Remove filled class
+                        slot.classList.remove('filled');
+                    }, 1500);
+                }
+            }
+            
+            // Clear indicators after a delay
+            setTimeout(() => {
+                document.querySelectorAll('.correct-indicator, .wrong-indicator, .partial-indicator').forEach(el => {
+                    el.remove();
+                });
+                
+                // Update draggable potions
+                updateDraggablePotions();
+                
+                // Check if formula complete
+                checkFormulaComplete();
+            }, 2000);
+        }
+        
+        // Update attempts display
+        function updateAttemptsDisplay() {
+            attemptCounter.textContent = gameState.attempts;
+        }
+        
+        // Create splash effect
+        function createSplashEffect(element, color) {
+            const rect = element.getBoundingClientRect();
+            
+            const splash = document.createElement('div');
+            splash.classList.add('splash-effect');
+            
+            // Set color based on potion
+            switch (color) {
+                case 'red':    splash.style.background = 'radial-gradient(circle, rgba(255,0,0,0.7) 0%, rgba(255,0,0,0) 70%)'; break;
+                case 'blue':   splash.style.background = 'radial-gradient(circle, rgba(0,0,255,0.7) 0%, rgba(0,0,255,0) 70%)'; break;
+                case 'green':  splash.style.background = 'radial-gradient(circle, rgba(0,255,0,0.7) 0%, rgba(0,255,0,0) 70%)'; break;
+                case 'yellow': splash.style.background = 'radial-gradient(circle, rgba(255,255,0,0.7) 0%, rgba(255,255,0,0) 70%)'; break;
+                case 'purple': splash.style.background = 'radial-gradient(circle, rgba(128,0,128,0.7) 0%, rgba(128,0,128,0) 70%)'; break;
+                case 'orange': splash.style.background = 'radial-gradient(circle, rgba(255,165,0,0.7) 0%, rgba(255,165,0,0) 70%)'; break;
+                case 'teal':   splash.style.background = 'radial-gradient(circle, rgba(0,128,128,0.7) 0%, rgba(0,128,128,0) 70%)'; break;
+            }
+            
+            splash.style.left = (rect.left + rect.width / 2) + 'px';
+            splash.style.top = (rect.top + rect.height / 2) + 'px';
+            
+            document.body.appendChild(splash);
+            
+            // Remove after animation
+            setTimeout(() => {
+                splash.remove();
+            }, 500);
+        }
+        
+        // Return a potion to an available shelf slot
+        function returnPotionToShelf(potion) {
+            // Find an empty slot on a shelf
+            const emptySlots = document.querySelectorAll('.shelf-slot:empty');
+            if (emptySlots.length > 0) {
+                // Move to first empty slot
+                const targetSlot = emptySlots[0];
+                const shelfIndex = parseInt(targetSlot.dataset.shelf);
+                
+                // Update game state
+                gameState.shelvesContent[shelfIndex].push(potion.dataset.color);
+                
+                // Move the potion
+                targetSlot.appendChild(potion);
+            } else {
+                // No empty slots, remove the potion (this shouldn't happen with proper design)
+                potion.remove();
+            }
+        }
+        
+        // Create confetti celebration
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                // Random color
+                const colors = ['#f44336', '#2196F3', '#FFEB3B', '#4CAF50', '#9C27B0', '#FF9800'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.backgroundColor = randomColor;
+                
+                // Random position
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = -20 + 'px';
+                
+                // Random size
+                const size = 5 + Math.random() * 10;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                
+                // Random rotation and shape
+                const rotation = Math.random() * 360;
+                confetti.style.transform = `rotate(${rotation}deg)`;
+                
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '50%';
+                } else if (Math.random() > 0.5) {
+                    confetti.style.width = `${size * 0.3}px`;
+                    confetti.style.height = `${size * 1.5}px`;
+                }
+                
+                // Add animation
+                confetti.style.animation = `fall ${3 + Math.random() * 5}s linear forwards`;
+                
+                document.body.appendChild(confetti);
+                
+                // Remove after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, 8000);
+            }
+        }
+        
+        // Go to next level
+        function goToNextLevel() {
+            // Hide success overlay
+            successOverlay.classList.remove('active');
+            
+            // Reset rainbow effect
+            rainbowEffect.style.animation = 'glow 3s infinite alternate';
+            
+            // Check if this was the last level
+            if (gameState.currentLevel >= config.maxLevels) {
+                // Game complete!
+                alert(`Congratulations! You've completed all steps and earned the Grand Prize! Your final score: ${gameState.score}`);
+                
+                // Reset to level 1
+                gameState.currentLevel = 1;
+            } else {
+                // Go to next level
+                gameState.currentLevel++;
+            }
+            
+            // Generate new level
+            generateLevel(gameState.currentLevel);
+        }
+        
+        // Skip to next level
+        function skipLevel() {
+            // Ask for confirmation
+            if (confirm("Are you sure you want to skip this level? You won't earn any points.")) {
+                // Go to next level without adding to completed levels or score
+                if (gameState.currentLevel < config.maxLevels) {
+                    gameState.currentLevel++;
+                    generateLevel(gameState.currentLevel);
+                } else {
+                    alert("This is the last level! Try to solve it to finish the game.");
+                }
+            }
+        }
+        
+        // Reset level completely
+        function resetLevel() {
+            generateLevel(gameState.currentLevel);
+        }
+        
+        // Show a hint
+        function showHint() {
+            if (gameState.hintUsed) {
+                alert("You've already used a hint on this level!");
+                return;
+            }
+            
+            // Mark hint as used
+            gameState.hintUsed = true;
+            hintBtn.classList.add('disabled');
+            hintBtn.disabled = true;
+            
+            // Choose a random index to reveal that isn't already locked
+            let availableIndices = [];
+            for (let i = 0; i < gameState.targetFormula.length; i++) {
+                if (!gameState.lockedPositions.includes(i)) {
+                    availableIndices.push(i);
+                }
+            }
+            
+            if (availableIndices.length === 0) {
+                alert("All correct positions are already revealed!");
+                return;
+            }
+            
+            // Pick a random slot to give a hint for
+            const hintIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            const targetColor = gameState.targetFormula[hintIndex];
+            const targetSlot = document.querySelector(`.formula-slot[data-index="${hintIndex}"]`);
+            
+            // Add visual hint highlight
+            targetSlot.classList.add('hint-highlight');
+            
+            // Find a potion of the correct color on the shelves
+            let foundPotion = null;
+            let foundShelf = -1;
+            let foundPosition = -1;
+            
+            for (let i = 0; i < 3; i++) {
+                for (let j = gameState.shelvesContent[i].length - 1; j >= 0; j--) {
+                    if (gameState.shelvesContent[i][j] === targetColor) {
+                        foundShelf = i;
+                        foundPosition = j;
+                        break;
+                    }
+                }
+                if (foundShelf !== -1) break;
+            }
+            
+            // If we found a potion on a shelf, highlight it
+            if (foundShelf !== -1) {
+                const shelfSlot = document.querySelector(`.shelf-slot[data-shelf="${foundShelf}"][data-position="${foundPosition}"]`);
+                
+                if (shelfSlot && shelfSlot.firstChild) {
+                    // Highlight the potion
+                    shelfSlot.firstChild.classList.add('hint-highlight');
+                    
+                    // Create a visual path from potion to slot
+                    const path = document.createElement('div');
+                    path.classList.add('hint-path');
+                    document.body.appendChild(path);
+                    
+                    // Create arrow animation to show what to move where
+                    const arrow = document.createElement('div');
+                    arrow.classList.add('hint-arrow');
+                    arrow.textContent = "⬆️ Place this potion here ⬆️";
+                    arrow.style.position = 'absolute';
+                    arrow.style.color = 'white';
+                    arrow.style.fontWeight = 'bold';
+                    arrow.style.textShadow = '0 0 5px black';
+                    arrow.style.zIndex = '1000';
+                    arrow.style.textAlign = 'center';
+                    arrow.style.width = '200px';
+                    arrow.style.animation = 'pulse 1s infinite alternate';
+                    
+                    // Position between potion and slot
+                    const potionRect = shelfSlot.firstChild.getBoundingClientRect();
+                    const slotRect = targetSlot.getBoundingClientRect();
+                    
+                    arrow.style.left = ((potionRect.left + potionRect.right) / 2 - 100) + 'px';
+                    arrow.style.top = ((potionRect.top + slotRect.bottom) / 2) + 'px';
+                    
+                    document.body.appendChild(arrow);
+                    
+                    // Remove hint after delay
+                    setTimeout(() => {
+                        document.querySelectorAll('.hint-highlight').forEach(el => {
+                            el.classList.remove('hint-highlight');
+                        });
+                        if (path) path.remove();
+                        if (arrow) arrow.remove();
+                    }, 5000);
+                }
+            } else {
+                // If no potion was found, just show what color is needed for this slot
+                const colorHint = document.createElement('div');
+                colorHint.classList.add('color-hint');
+                colorHint.style.position = 'absolute';
+                colorHint.style.width = '40px';
+                colorHint.style.height = '40px';
+                colorHint.style.borderRadius = '50%';
+                colorHint.style.background = `var(--${targetColor}-color)`;
+                colorHint.style.boxShadow = '0 0 15px white';
+                colorHint.style.zIndex = '1000';
+                colorHint.style.animation = 'pulse 1s infinite alternate';
+                
+                // Position over the slot
+                const slotRect = targetSlot.getBoundingClientRect();
+                colorHint.style.left = ((slotRect.left + slotRect.right) / 2 - 20) + 'px';
+                colorHint.style.top = ((slotRect.top + slotRect.bottom) / 2 - 20) + 'px';
+                
+                document.body.appendChild(colorHint);
+                
+                // Remove after delay
+                setTimeout(() => {
+                    if (colorHint) colorHint.remove();
+                    document.querySelectorAll('.hint-highlight').forEach(el => {
+                        el.classList.remove('hint-highlight');
+                    });
+                }, 5000);
+                
+                // Display text hint
+                const textHint = document.createElement('div');
+                textHint.textContent = `Hint: Use ${targetColor.toUpperCase()} potion in position ${hintIndex + 1}`;
+                textHint.style.position = 'absolute';
+                textHint.style.top = '10px';
+                textHint.style.left = '50%';
+                textHint.style.transform = 'translateX(-50%)';
+                textHint.style.background = 'rgba(0, 0, 0, 0.7)';
+                textHint.style.color = 'white';
+                textHint.style.padding = '10px 20px';
+                textHint.style.borderRadius = '10px';
+                textHint.style.zIndex = '1000';
+                
+                document.body.appendChild(textHint);
+                
+                // Remove text hint after delay
+                setTimeout(() => {
+                    if (textHint) textHint.remove();
+                }, 5000);
+            }
+        }
+        
+        // Update score display
+        function updateScoreDisplay() {
+            scoreDisplay.textContent = `Score: ${gameState.score}`;
+        }
+        
+        // Set up swipe gestures for mobile
+        function setupSwipeGestures() {
+            let startX, startY, endX, endY;
+            const minSwipeDistance = 100;
+            
+            document.addEventListener('touchstart', function(e) {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            }, false);
+            
+            document.addEventListener('touchend', function(e) {
+                if (!startX || !startY) return;
+                
+                endX = e.changedTouches[0].clientX;
+                endY = e.changedTouches[0].clientY;
+                
+                // Calculate distance
+                const diffX = startX - endX;
+                const diffY = startY - endY;
+                
+                // If horizontal swipe is stronger and long enough
+                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDistance) {
+                    // Right to left swipe
+                    if (diffX > 0) {
+                        // Swipe left - reset formula
+                        resetFormula();
+                        if (navigator.vibrate) navigator.vibrate(100);
+                    }
+                    // Left to right swipe
+                    else {
+                        // Swipe right - hint
+                        showHint();
+                        if (navigator.vibrate) navigator.vibrate([50, 50, 50]);
+                    }
+                }
+                
+                startX = startY = null;
+            }, false);
+        }
+        
+        // Reset just the current formula, not the entire level
+        function resetFormula() {
+            // Return all potions from formula slots to shelves
+            const formulaSlots = document.querySelectorAll('.formula-slot');
+            
+            formulaSlots.forEach(slot => {
+                const potion = slot.firstChild;
+                if (potion && !gameState.lockedPositions.includes(parseInt(slot.dataset.index))) {
+                    returnPotionToShelf(potion);
+                    
+                    // Update formula state
+                    const index = parseInt(slot.dataset.index);
+                    gameState.currentFormula[index] = null;
+                    
+                    // Remove filled class
+                    slot.classList.remove('filled');
+                }
+            });
+            
+            // Update draggable potions
+            updateDraggablePotions();
+            
+            // Check if formula is complete
+            checkFormulaComplete();
+        }
+
+        // Tutorial for first-time players
+        function showTutorial() {
+            // Create tutorial overlay
+            const tutorial = document.createElement('div');
+            tutorial.classList.add('tutorial-overlay');
+            
+            // Create multi-step tutorial
+            const steps = [
+                {
+                    target: '.shelf-section',
+                    text: 'Tap or drag potions from the top of each shelf',
+                    position: 'top'
+                },
+                {
+                    target: '.cauldron-container',
+                    text: 'Place potions in the cauldron to create your formula',
+                    position: 'bottom'
+                },
+                {
+                    target: '.check-btn',
+                    text: 'Check your formula - ✓ means correct, ↺ means right color but wrong place, ✗ means wrong',
+                    position: 'top'
+                }
+            ];
+            
+            let currentStep = 0;
+            
+            // Show first step
+            showStep(currentStep);
+            
+            function showStep(stepIndex) {
+                if (stepIndex >= steps.length) {
+                    // Tutorial complete
+                    tutorial.remove();
+                    localStorage.setItem('tutorialComplete', 'true');
+                    return;
+                }
+                
+                const step = steps[stepIndex];
+                const target = document.querySelector(step.target);
+                const rect = target.getBoundingClientRect();
+                
+                tutorial.innerHTML = `
+                    <div class="tutorial-highlight" style="
+                        top: ${rect.top}px;
+                        left: ${rect.left}px;
+                        width: ${rect.width}px;
+                        height: ${rect.height}px;
+                    "></div>
+                    <div class="tutorial-text" style="
+                        ${step.position === 'top' ? `bottom: ${window.innerHeight - rect.top + 20}px;` : `top: ${rect.bottom + 20}px;`}
+                        left: ${rect.left + rect.width/2}px;
+                    ">
+                        ${step.text}
+                        <button class="tutorial-next">Next</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(tutorial);
+                
+                document.querySelector('.tutorial-next').addEventListener('click', () => {
+                    currentStep++;
+                    showStep(currentStep);
+                });
+            }
+        }
+        
+        // Check for achievements
+        function checkForAchievements(timeElapsed) {
+            // Load saved achievements
+            const savedAchievements = JSON.parse(localStorage.getItem('achievements')) || achievements;
+            
+            // Check for unlocks
+            if (!savedAchievements.find(a => a.id === 'first_complete').unlocked && 
+                gameState.completedLevels.length > 0) {
+                unlockAchievement('first_complete');
+            }
+            
+            if (!savedAchievements.find(a => a.id === 'complete_all').unlocked && 
+                gameState.completedLevels.length >= config.maxLevels) {
+                unlockAchievement('complete_all');
+            }
+            
+            if (!savedAchievements.find(a => a.id === 'speed_demon').unlocked && 
+                timeElapsed < 10) {
+                unlockAchievement('speed_demon');
+            }
+            
+            if (!savedAchievements.find(a => a.id === 'no_mistakes').unlocked && 
+                gameState.attempts === config.maxAttempts) {
+                unlockAchievement('no_mistakes');
+            }
+            
+            // Save updated achievements
+            localStorage.setItem('achievements', JSON.stringify(savedAchievements));
+        }
+        
+        function unlockAchievement(id) {
+            const savedAchievements = JSON.parse(localStorage.getItem('achievements')) || achievements;
+            const achievement = savedAchievements.find(a => a.id === id);
+            
+            if (achievement && !achievement.unlocked) {
+                achievement.unlocked = true;
+                
+                // Show achievement notification
+                const notification = document.createElement('div');
+                notification.classList.add('achievement-notification');
+                notification.innerHTML = `
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-text">
+                        <div class="achievement-title">${achievement.title}</div>
+                        <div class="achievement-desc">${achievement.description}</div>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Animation
+                setTimeout(() => notification.classList.add('show'), 100);
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 500);
+                }, 3000);
+            }
+        }
+        
+        // Load achievements from localStorage
+        function loadAchievements() {
+            const savedAchievements = localStorage.getItem('achievements');
+            if (savedAchievements) {
+                // We have saved achievements, merge them with the default ones
+                const parsed = JSON.parse(savedAchievements);
+                
+                // Make sure we have all achievements defined
+                achievements.forEach(achievement => {
+                    const saved = parsed.find(a => a.id === achievement.id);
+                    if (saved) {
+                        achievement.unlocked = saved.unlocked;
+                    }
+                });
+            }
+        }
+        
+        // Save game progress to localStorage
+        function saveGameProgress() {
+            const saveData = {
+                currentLevel: gameState.currentLevel,
+                score: gameState.score,
+                completedLevels: gameState.completedLevels,
+                levelTimes: gameState.levelTimes
+            };
+            
+            localStorage.setItem('cauldronGameProgress', JSON.stringify(saveData));
+        }
+        
+        // Load game progress from localStorage
+        function loadGameProgress() {
+            const savedProgress = localStorage.getItem('cauldronGameProgress');
+            if (savedProgress) {
+                const parsed = JSON.parse(savedProgress);
+                
+                // Restore saved progress
+                gameState.currentLevel = parsed.currentLevel || 1;
+                gameState.score = parsed.score || 0;
+                gameState.completedLevels = parsed.completedLevels || [];
+                gameState.levelTimes = parsed.levelTimes || [];
+            }
+        }
+        
+        // Setup Progressive Web App features
+        function setupProgressiveWebApp() {
+            // Register service worker for offline play
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('Service Worker registered'))
+                    .catch(err => console.log('Service Worker not registered', err));
+            }
+            
+            // Set up install prompt
+            setupInstallPrompt();
+        }
+        
+        // PWA install prompt
+        function setupInstallPrompt() {
+            let deferredPrompt;
+            const installBanner = document.createElement('div');
+            installBanner.classList.add('install-banner');
+            installBanner.innerHTML = `
+                <div class="install-content">
+                    <div>Install Magic Cauldron game on your device!</div>
+                    <button id="installButton">Install</button>
+                    <button id="dismissInstall">✕</button>
+                </div>
+            `;
+            installBanner.style.display = 'none';
+            document.body.appendChild(installBanner);
+            
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBanner.style.display = 'block';
+                
+                document.getElementById('installButton').addEventListener('click', () => {
+                    installBanner.style.display = 'none';
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        deferredPrompt = null;
+                    });
+                });
+                
+                document.getElementById('dismissInstall').addEventListener('click', () => {
+                    installBanner.style.display = 'none';
+                });
+            });
+        }
+        
+        // Helper function to compare arrays
+        function arraysEqual(a, b) {
+            if (a.length !== b.length) return false;
+            for (let i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) return false;
+            }
+            return true;
+        }
+        
+        // Start the game when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
