@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAGIC CAULDRON</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Top Section - Cauldron Room with head.png background -->
+        <div class="cauldron-room">
+            <!-- Cauldron -->
+            <div class="cauldron">
+                <div class="cauldron-liquid"></div>
+                <div class="cauldron-bubbles" id="cauldronBubbles"></div>
+            </div>
+        </div>
+        
+        <!-- Game Header -->
+        <div class="game-header">
+            <div class="coin-display">
+                <div class="coin-icon"></div>
+                <div class="coin-amount">123.345</div>
+            </div>
+            <div class="game-title">MAGIC CAULDRON</div>
+            <div class="level-chest">
+                <div class="chest-icon"></div>
+                <div class="level-indicator">13</div>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <!-- Game Area - Racks -->
+        <div class="game-area" id="gameArea">
+            <!-- Racks will be generated here -->
+        </div>
+        
+        <!-- Bottom Potions Rack -->
+        <div class="bottom-rack" id="bottomRack">
+            <!-- Starting potions will be placed here -->
+        </div>
+    </div>
+    
+    <!-- Success Overlay -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-message">SUCCESS!</div>
+        <div class="reward-container">
+            <div class="reward-icon"></div>
+            <div class="reward-amount">+50</div>
+        </div>
+        <button id="nextLevelBtn" class="next-level-btn">Next Level</button>
+    </div>
+    
+    <script src="index.js"></script>
+</body>
+</html>

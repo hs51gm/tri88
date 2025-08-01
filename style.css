@@ -1,0 +1,518 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+:root {
+    --main-purple: #8a65c9;
+    --dark-purple: #5c3e96;
+    --light-purple: #b49de3;
+    --accent-gold: #ffc837;
+    --shelf-color: #4f86ff;
+    --correct-green: #32CD32;
+}
+
+body {
+    font-family: 'Arial Rounded MT Bold', 'Arial Bold', sans-serif;
+    overflow: hidden;
+    touch-action: manipulation;
+    background-color: #000;
+}
+
+/* Game Container */
+.game-container {
+    width: 100%;
+    height: 100vh;
+    max-width: 450px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-image: url('wall.svg');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Cauldron Room - Menggunakan head.png */
+.cauldron-room {
+    width: 100%;
+    height: 220px;
+    background-image: url('head.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+/* Sembunyikan elemen yang sudah ada di background */
+.room-decorations,
+.bookshelf,
+.window,
+.reward-sign {
+    display: none;
+}
+
+/* Cauldron with pedestal */
+.cauldron {
+    width: 130px;
+    height: 130px;
+    background-image: url('caul.gif');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    z-index: 2;
+    margin-top: 20px;
+}
+
+.cauldron-liquid {
+    display: none;
+}
+
+.cauldron-bubbles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.bubble {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    filter: blur(1px);
+}
+
+/* Game Header */
+.game-header {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(to right, #FF69B4, #FF1493);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    color: white;
+    font-weight: bold;
+    z-index: 10;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.coin-display, .level-chest {
+    display: flex;
+    align-items: center;
+    background-color: rgba(0,0,0,0.2);
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.coin-icon {
+    width: 30px;
+    height: 30px;
+    background-color: var(--accent-gold);
+    border-radius: 50%;
+    margin-right: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.coin-icon::after {
+    content: '$';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #8B4513;
+    font-weight: bold;
+}
+
+.chest-icon {
+    width: 30px;
+    height: 30px;
+    background-color: #8B4513;
+    border-radius: 5px;
+    margin-right: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.chest-icon::before {
+    content: '';
+    position: absolute;
+    top: 40%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #FFD700;
+}
+
+.game-title {
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    letter-spacing: 1px;
+}
+
+/* Progress Bar */
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background-color: var(--dark-purple);
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0 0 15px 15px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, #32CD32, #7FFF00);
+    width: 50%;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
+}
+
+/* Game Area */
+.game-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    overflow-y: auto;
+    background-image: url('wall.svg');
+    background-size: cover;
+}
+
+/* Rack - enhanced with 3D effect */
+.rack {
+    width: 100%;
+    height: 70px;
+    background: linear-gradient(to bottom, #6fa1ff, var(--shelf-color));
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3), inset 0 -5px 10px rgba(0,0,0,0.2);
+    transform: perspective(500px) rotateX(5deg);
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.rack::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 15px;
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 15px 15px 0 0;
+}
+
+.slot {
+    width: 50px;
+    height: 55px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 500px;
+}
+
+.slot-base {
+    width: 40px;
+    height: 10px;
+    background-color: var(--correct-green);
+    position: absolute;
+    bottom: 0;
+    border-radius: 5px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+}
+
+.splash {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+}
+
+/* Splash colors remain unchanged */
+.splash-red { background-image: url('splash_red.png'); }
+.splash-yellow { background-image: url('splash_yellow.png'); }
+.splash-purple { background-image: url('splash_purple.png'); }
+.splash-orange { background-image: url('splash_orange.png'); }
+.splash-darkblue { background-image: url('splash_darkblue.png'); }
+.splash-lightblue { background-image: url('splash_lightblue.png'); }
+.splash-darkgreen { background-image: url('splash_darkgreen.png'); }
+.splash-lightgreen { background-image: url('splash_lightgreen.png'); }
+.splash-brown { background-image: url('splash_brown.png'); }
+.splash-pink { background-image: url('splash_pink.png'); }
+
+/* Potion - enhanced with 3D effect and floating animation */
+.potion {
+    width: 36px;
+    height: 50px;
+    position: relative;
+    cursor: pointer;
+    z-index: 2;
+    transition: transform 0.2s, filter 0.2s;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3));
+    transform-style: preserve-3d;
+    animation: floatPotion 2s infinite ease-in-out;
+}
+
+.potion:hover {
+    transform: translateY(-8px) scale(1.1);
+    filter: drop-shadow(0 8px 8px rgba(0,0,0,0.4)) brightness(1.2);
+    animation-play-state: paused;
+}
+
+/* Bottom rack potions have more pronounced floating */
+.bottom-rack .potion {
+    animation: floatPotionLarge 3s infinite ease-in-out;
+}
+
+/* Potion colors remain unchanged */
+.potion-red { background-image: url('potion_red.png'); }
+.potion-yellow { background-image: url('potion_yellow.png'); }
+.potion-purple { background-image: url('potion_purple.png'); }
+.potion-orange { background-image: url('potion_orange.png'); }
+.potion-darkblue { background-image: url('potion_darkblue.png'); }
+.potion-lightblue { background-image: url('potion_lightblue.png'); }
+.potion-darkgreen { background-image: url('potion_darkgreen.png'); }
+.potion-lightgreen { background-image: url('potion_lightgreen.png'); }
+.potion-brown { background-image: url('potion_brown.png'); }
+.potion-pink { background-image: url('potion_pink.png'); }
+
+/* Bottom Rack - enhanced with better appearance */
+.bottom-rack {
+    width: 100%;
+    height: 90px;
+    background: linear-gradient(to bottom, #5880ca, var(--shelf-color));
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    border-radius: 15px;
+    margin: 15px 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3), inset 0 -5px 10px rgba(0,0,0,0.2);
+    transform: perspective(500px) rotateX(5deg);
+    border: 1px solid rgba(255,255,255,0.3);
+    position: relative;
+}
+
+.bottom-rack::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 15px;
+    background-color: rgba(255,255,255,0.3);
+    border-radius: 15px 15px 0 0;
+}
+
+/* Success Overlay */
+.success-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+    backdrop-filter: blur(5px);
+}
+
+.success-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.success-message {
+    font-size: 48px;
+    font-weight: bold;
+    color: var(--accent-gold);
+    text-shadow: 0 0 15px #FFA500, 0 0 25px #FF8C00;
+    margin-bottom: 30px;
+    animation: pulse 1.5s infinite alternate;
+    letter-spacing: 2px;
+}
+
+.reward-container {
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, var(--accent-gold), #FF8C00);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 30px var(--accent-gold);
+    margin-bottom: 30px;
+    position: relative;
+    animation: glow 2s infinite alternate;
+}
+
+.reward-icon {
+    width: 80px;
+    height: 80px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    position: relative;
+}
+
+.reward-icon::after {
+    content: '✦';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    color: #FF8C00;
+}
+
+.reward-amount {
+    position: absolute;
+    bottom: -20px;
+    background: #333;
+    color: var(--accent-gold);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 22px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+    border: 2px solid #555;
+}
+
+.next-level-btn {
+    padding: 18px 35px;
+    font-size: 20px;
+    background: linear-gradient(45deg, #4CAF50, #8BC34A);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+}
+
+.next-level-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 7px 20px rgba(0,0,0,0.4);
+}
+
+/* Highlight for correct positions */
+.correct-position {
+    box-shadow: 0 0 15px var(--correct-green);
+    background-color: rgba(50, 205, 50, 0.3);
+    border-radius: 10px;
+    animation: correctPulse 2s infinite alternate;
+}
+
+/* Enhanced Animations */
+@keyframes bubble {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+    100% { transform: translateY(0); }
+}
+
+/* New floating animation for potions */
+@keyframes floatPotion {
+    0% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-3px) rotate(1deg); }
+    50% { transform: translateY(-1px) rotate(0deg); }
+    75% { transform: translateY(-2px) rotate(-1deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* Larger floating animation for bottom rack potions */
+@keyframes floatPotionLarge {
+    0% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-5px) rotate(2deg); }
+    50% { transform: translateY(-2px) rotate(0deg); }
+    75% { transform: translateY(-4px) rotate(-2deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* Transition animation for moving potions */
+@keyframes moveToSlot {
+    0% { 
+        transform: scale(1) translateY(0); 
+        opacity: 1; 
+    }
+    30% { 
+        transform: scale(1.1) translateY(-50px); 
+        opacity: 1; 
+    }
+    70% { 
+        transform: scale(0.9) translateY(-120px);
+        opacity: 0.9; 
+    }
+    100% { 
+        transform: scale(1) translateY(0);
+        opacity: 1; 
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); text-shadow: 0 0 15px #FFA500; }
+    100% { transform: scale(1.1); text-shadow: 0 0 25px #FFA500, 0 0 40px #FF8C00; }
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 20px var(--accent-gold); }
+    100% { box-shadow: 0 0 40px var(--accent-gold), 0 0 60px #FF8C00; }
+}
+
+@keyframes correctPulse {
+    0% { box-shadow: 0 0 10px var(--correct-green); }
+    100% { box-shadow: 0 0 20px var(--correct-green), 0 0 30px #7FFF00; }
+}
+
+@keyframes splash {
+    0% { transform: scale(0.8); opacity: 0.9; }
+    100% { transform: scale(1.3); opacity: 0.6; }
+}
+
+@keyframes explode {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2) rotate(5deg); filter: brightness(1.5); }
+    100% { transform: scale(0) rotate(15deg); opacity: 0; }
+}
+
+@keyframes moveToCaludron {
+    0% { transform: translateY(0) rotate(0deg); }
+    30% { transform: translateY(-50px) scale(0.9) rotate(5deg); }
+    60% { transform: translateY(-150px) scale(0.7) rotate(15deg); }
+    100% { transform: translateY(-200px) scale(0.2) rotate(25deg); opacity: 0; }
+}
